@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Захиалга дуудах систем</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 460px;
+      width: 100%;
+    }
+
+    /* ── Дугаар оруулах ── */
+    .big-input {
+      font-size: 36px;
+      font-weight: 500;
+      text-align: center;
+      width: 100%;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      border: 0.5px solid #ccc;
+      background: #fff;
+      color: #111;
+    }
+
+    .mn-text {
+      font-size: 18px;
+      font-weight: 500;
+      color: #111;
+      text-align: center;
+      min-height: 30px;
+      margin: 4px 0;
+    }
+
+    .preview {
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 12px;
+      min-height: 18px;
+      font-style: italic;
+    }
+
+    /* ── Товчлуур ── */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .key {
+      font-size: 22px;
+      font-weight: 500;
+      padding: 16px;
+      border-radius: 12px;
+      border: 0.5px solid #ddd;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      transition: background 0.1s;
+    }
+
+    .key:hover {
+      background: #f0f0f0;
+    }
+
+    .key:active {
+      transform: scale(0.96);
+    }
+
+    .key.zero {
+      grid-column: span 2;
+    }
+
+    .key.del {
+      color: #c0392b;
+    }
+
+    .speak-btn {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #d4edda;
+      color: #155724;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .speak-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      min-height: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Түүх ── */
+    /* ── Хүлээлтийн тоолуур ── */
+    .queue-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border: 0.5px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+    }
+
+    .queue-label {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .queue-count {
+      font-size: 28px;
+      font-weight: 700;
+      color: #155724;
+      background: #d4edda;
+      border-radius: 8px;
+      padding: 2px 16px;
+      min-width: 56px;
+      text-align: center;
+    }
+
+    .queue-count.zero {
+      color: #aaa;
+      background: #f5f5f5;
+    }
+
+    .queue-sub {
+      font-size: 11px;
+      color: #aaa;
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .history-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .clear-btn {
+      font-size: 12px;
+      color: #c0392b;
+      background: none;
+      border: 0.5px solid #c0392b;
+      border-radius: 6px;
+      padding: 3px 10px;
+      cursor: pointer;
+    }
+
+    .clear-btn:hover {
+      background: #fff0f0;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .history-empty {
+      font-size: 13px;
+      color: #bbb;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .history-item {
+      background: #fff;
+      border: 0.5px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .history-item:hover {
+      background: #f0fff4;
+      border-color: #b2dfdb;
+    }
+
+    .history-item:active {
+      transform: scale(0.98);
+    }
+
+    .hi-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hi-num {
+      font-size: 22px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .hi-word {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .hi-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .hi-time {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .hi-replay {
+      font-size: 11px;
+      color: #155724;
+      background: #d4edda;
+      border: none;
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+    }
+
+    .hi-replay:hover {
+      background: #b2dfdb;
+    }
+
+    .hi-delete {
+      font-size: 13px;
+      background: #fff0f0;
+      color: #c0392b;
+      border: 0.5px solid #f5b7b1;
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+    }
+
+    .hi-delete:hover {
+      background: #f5b7b1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- Дугаар оруулах -->
+    <input class="big-input" id="numInput" placeholder="Дугаар" readonly />
+    <div class="mn-text" id="mnText">—</div>
+    <div class="preview" id="preview"></div>
+
+    <!-- Товчлуур -->
+    <div class="keypad">
+      <div class="key" onclick="press('1')">1</div>
+      <div class="key" onclick="press('2')">2</div>
+      <div class="key" onclick="press('3')">3</div>
+      <div class="key" onclick="press('4')">4</div>
+      <div class="key" onclick="press('5')">5</div>
+      <div class="key" onclick="press('6')">6</div>
+      <div class="key" onclick="press('7')">7</div>
+      <div class="key" onclick="press('8')">8</div>
+      <div class="key" onclick="press('9')">9</div>
+      <div class="key zero" onclick="press('0')">0</div>
+      <div class="key del" onclick="del()">⌫</div>
+    </div>
+
+    <!-- Хүлээлтийн тоолуур -->
+    <div class="queue-box">
+      <div>
+        <div class="queue-label">Хүлээгдэж байгаа захиалга</div>
+        <div class="queue-sub" id="queueSub">—</div>
+      </div>
+      <div class="queue-count zero" id="queueCount">0</div>
+    </div>
+
+    <button class="speak-btn" id="speakBtn" onclick="announce()">&#9654; Захиалга бэлэн боллоо</button>
+    <p class="status" id="status"></p>
+
+    <!-- Түүх -->
+    <div class="history-header">
+      <span class="history-title">Захиалгын түүх</span>
+      <button class="clear-btn" onclick="clearHistory()">Цэвэрлэх</button>
+    </div>
+    <div class="history-list" id="historyList">
+      <p class="history-empty" id="historyEmpty">Одоогоор захиалга байхгүй байна</p>
+    </div>
+
+  </div>
+
+  <script>
+
+    // ============================================================
+    //  MP3 ФАЙЛУУДЫН БАЙРШИЛ — ЭНД ӨӨРЧЛӨХ
+    // ============================================================
+    const AUDIO = {
+      1: 'audio/1.m4a', 2: 'audio/2.m4a', 3: 'audio/3.m4a',
+      4: 'audio/4.m4a', 5: 'audio/5.m4a', 6: 'audio/6.m4a',
+      7: 'audio/7.m4a', 8: 'audio/8.m4a', 9: 'audio/9.m4a',
+      10: 'audio/10.m4a',
+
+      // Дангаараа: хорь, гуч, дөч...
+      20: 'audio/20.m4a', 30: 'audio/30.m4a', 40: 'audio/40.m4a',
+      50: 'audio/50.m4a', 60: 'audio/60.m4a', 70: 'audio/70.m4a',
+      80: 'audio/80.m4a', 90: 'audio/90.m4a',
+
+      // Нэгтэй холбогдох үед: хорон, гучин, дөчин...
+      '20n': 'audio/xorin.m4a',  // "хорон"  → 21-29
+      '30n': 'audio/guchin.m4a',  // "гучин"  → 31-39
+      '40n': 'audio/duchin.m4a',  // "дөчин"  → 41-49
+      '50n': 'audio/tavin.m4a',   // "тавин"  → 51-59
+      '60n': 'audio/jaran.m4a',   // "жаран"  → 61-69
+      '70n': 'audio/dalan.m4a',   // "далан"  → 71-79
+      '80n': 'audio/nayn.m4a',   // "наян"   → 81-89
+      '90n': 'audio/yorn.m4a',   // "ерэн"   → 91-99
+
+      // Зуутай холбогдох үед: гурван, таван, зургаан...
+      // ЭНД файлуудаа бичиж аваад оруулна уу (2-9 хүртэлх тоонуудын өмнө 'z' үсэг тавьж нэрлэхийг зөвлөж байна)    
+      '2z': 'audio/2 zuun.m4a',   // "хоёр" → 200-299
+      '3z': 'audio/3n.m4a',   // "гурван" → 300-399
+      '4z': 'audio/4n.m4a',   // "дөрвөн" → 400-499
+      '5z': 'audio/5n.m4a',    // "таван"  → 500-599
+      '6z': 'audio/6n.m4a',  // "зургаан"→ 600-699
+      '7z': 'audio/7n.m4a',   // "долоон" → 700-799
+      '8z': 'audio/8n.m4a',   // "найман" → 800-899
+      '9z': 'audio/9n.m4a',    // "есөн"   → 900-999
+
+      arvan: 'audio/arvan.m4a', zuun: 'audio/zuun.m4a',
+      myanga: 'audio/1000.m4a',
+      end: 'audio/end.m4a'
+    };
+
+    // ── Дараалал үүсгэх ───────────────────────────────────────
+    function buildSequence(n) {
+      const p = [];
+      if (n <= 0 || n >= 10000) return p;
+      if (n >= 1000) { const th = Math.floor(n / 1000); if (th > 1) p.push(AUDIO[th]); p.push(AUDIO.myanga); n %= 1000; }
+      if (n >= 100) { const h = Math.floor(n / 100); if (h === 2) p.push(AUDIO[2]); else if (h > 2) p.push(AUDIO[h + 'z']); p.push(AUDIO.zuun); n %= 100; }
+      if (n >= 20) {
+        const tens = Math.floor(n / 10) * 10;
+        const r = n % 10;
+        if (r > 0) {
+          p.push(AUDIO[tens + 'n']); // хорон, гучин, дөчин...
+          p.push(AUDIO[r]);
+        } else {
+          p.push(AUDIO[tens]);     // хорь, гуч, дөч...
+        }
+      }
+      else if (n >= 11) { p.push(AUDIO.arvan); p.push(AUDIO[n % 10]); }
+      else if (n === 10) { p.push(AUDIO[10]); }
+      else if (n > 0) { p.push(AUDIO[n]); }
+      p.push(AUDIO.end);
+      return p;
+    }
+
+    // ── Анхааруулах хонх ─────────────────────────────────────
+    function playBell(onDone) {
+      // ============================================================
+      //  ХОНХНЫ MP3 ФАЙЛ — ЭНД ӨӨРЧЛӨХ
+      //  audio хавтсандаа хонхны дуугаа хийгээд доор заана
+      // ============================================================
+      const BELL_FILE = 'audio/bell.mp3'; // ← ЭНД файлын нэрээ заана
+
+      const audio = new Audio(BELL_FILE);
+      audio.onended = () => { if (onDone) onDone(); };
+      audio.onerror = () => {
+        // Файл олдохгүй бол Web Audio-оор орлуулна
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = ctx.currentTime;
+          function ding(freq, harmonic, duration) {
+            [freq, harmonic].forEach((f, i) => {
+              const osc = ctx.createOscillator();
+              const g = ctx.createGain();
+              osc.connect(g); g.connect(ctx.destination);
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(f, now);
+              osc.frequency.exponentialRampToValueAtTime(f * 0.7, now + duration);
+              g.gain.setValueAtTime(i === 0 ? 0.7 : 0.25, now);
+              g.gain.exponentialRampToValueAtTime(0.001, now + duration);
+              osc.start(now); osc.stop(now + duration);
+            });
+          }
+          ding(1047, 2093, 1.8);
+          setTimeout(() => { ctx.close(); if (onDone) onDone(); }, 1900);
+        } catch (e) { if (onDone) onDone(); }
+      };
+      audio.play().catch(() => audio.onerror());
+    }
+
+
+
+    // ── MP3 дараалан тоглуулах ────────────────────────────────
+    function playSequence(files, idx, onDone) {
+      if (idx >= files.length) { onDone(); return; }
+      const a = new Audio(files[idx]);
+      a.onended = () => playSequence(files, idx + 1, onDone);
+      a.onerror = () => { playSequence(files, idx + 1, onDone); };
+      a.play();
+    }
+
+    // ── Монгол тоо ────────────────────────────────────────────
+    const MN = { 0: 'тэг', 1: 'нэг', 2: 'хоёр', 3: 'гурав', 4: 'дөрөв', 5: 'тав', 6: 'зургаа', 7: 'долоо', 8: 'найм', 9: 'ес', 10: 'арав', 11: 'арван нэг', 12: 'арван хоёр', 13: 'арван гурав', 14: 'арван дөрөв', 15: 'арван тав', 16: 'арван зургаа', 17: 'арван долоо', 18: 'арван найм', 19: 'арван ес', 20: 'хорь', 30: 'гуч', 40: 'дөч', 50: 'тавь', 60: 'жар', 70: 'дал', 80: 'ная', 90: 'ер' };
+    const MN_linked = { 20: 'хорин', 30: 'гучин', 40: 'дөчин', 50: 'тавин', 60: 'жаран', 70: 'далан', 80: 'наян', 90: 'ерэн' };
+    // Зуутай холбогдох үед: гурван, таван, зургаан...
+    const MN_zuun = { 2: 'хоёр', 3: 'гурван', 4: 'дөрвөн', 5: 'таван', 6: 'зургаан', 7: 'долоон', 8: 'найман', 9: 'есөн' };
+    function toMN(n) { if (n === 0) return 'тэг'; if (n <= 20) return MN[n] || ''; if (n < 100) { const t = Math.floor(n / 10) * 10, r = n % 10; if (r > 0) return MN_linked[t] + ' ' + MN[r]; return MN[t]; } if (n < 1000) { const h = n / 100 | 0, r = n % 100; const hword = h === 1 ? '' : (MN_zuun[h] || MN[h]) + ' '; return hword + 'зуун' + (r ? ' ' + toMN(r) : ''); } if (n < 10000) { const th = n / 1000 | 0, r = n % 1000; return (th === 1 ? '' : MN[th] + ' ') + 'мянга' + (r ? ' ' + toMN(r) : ''); } return n.toString(); }
+
+    // ── Цаг форматлах ─────────────────────────────────────────
+    function formatTime(date) {
+      const h = String(date.getHours()).padStart(2, '0');
+      const m = String(date.getMinutes()).padStart(2, '0');
+      const s = String(date.getSeconds()).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    // ── Түүх ──────────────────────────────────────────────────
+    // ── Хүлээлтийн дараалал ──────────────────────────────────
+    let queue = []; // {num, word} дараалал
+
+    function addToQueue(num, word) {
+      queue.push({ num, word });
+      renderQueue();
+    }
+
+    function removeFromQueue() {
+      queue.shift();
+      renderQueue();
+    }
+
+    function renderQueue() {
+      const el = document.getElementById('queueCount');
+      const sub = document.getElementById('queueSub');
+      el.textContent = queue.length;
+      if (queue.length === 0) {
+        el.className = 'queue-count zero';
+        sub.textContent = '—';
+      } else {
+        el.className = 'queue-count';
+        sub.textContent = 'Дараагийн: ' + (queue[0] ? queue[0].word + ' дугаар' : '');
+      }
+    }
+
+    let history = [];
+
+    function addHistory(num, word) {
+      history.unshift({ num, word, time: formatTime(new Date()) });
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const empty = document.getElementById('historyEmpty');
+      // Хуучин зүйлсийг арилгах (empty-г үлдээх)
+      Array.from(list.querySelectorAll('.history-item')).forEach(el => el.remove());
+
+      if (history.length === 0) {
+        empty.style.display = '';
+        return;
+      }
+      empty.style.display = 'none';
+
+      history.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.onclick = () => replayItem(idx);
+        div.innerHTML = `
+      <div class="hi-left">
+        <span class="hi-num">${item.num}</span>
+        <span class="hi-word">${item.word} дугаартай захиалга бэлэн боллоо</span>
+      </div>
+      <div class="hi-right">
+        <span class="hi-time">${item.time}</span>
+        <div style="display:flex;gap:5px;margin-top:3px;">
+          <button class="hi-replay" onclick="event.stopPropagation();replayItem(${idx})">&#9654; Дахин</button>
+          <button class="hi-delete" onclick="event.stopPropagation();deleteItem(${idx})">🗑</button>
+        </div>
+      </div>
+    `;
+        list.appendChild(div);
+      });
+    }
+
+    function replayItem(idx) {
+      const item = history[idx];
+      if (!item) return;
+      const files = buildSequence(parseInt(item.num));
+      if (!files.length) return;
+      const btn = document.getElementById('speakBtn');
+      btn.disabled = true;
+      document.getElementById('status').textContent = 'Дуугарч байна...';
+      playBell(() => {
+        playSequence(files, 0, () => {
+          btn.disabled = false;
+          document.getElementById('status').textContent = '';
+        });
+      });
+    }
+
+    function deleteItem(idx) {
+      history.splice(idx, 1);
+      renderHistory();
+    }
+
+    function clearHistory() {
+      if (history.length === 0) return;
+      if (confirm('Түүхийг цэвэрлэх үү?')) {
+        history = [];
+        renderHistory();
+      }
+    }
+
+    // ── Товчлуур ──────────────────────────────────────────────
+    let cur = '', mnWord = '';
+    function press(k) { if (cur.length >= 4) return; cur += k; update(); }
+    function del() { cur = cur.slice(0, -1); update(); }
+    function update() {
+      document.getElementById('numInput').value = cur;
+      if (cur) {
+        const n = parseInt(cur);
+        mnWord = isNaN(n) ? '' : toMN(n);
+        document.getElementById('mnText').textContent = mnWord || '—';
+        document.getElementById('preview').textContent = mnWord ? `"${mnWord} дугаартай захиалга бэлэн боллоо"` : '';
+      } else {
+        mnWord = '';
+        document.getElementById('mnText').textContent = '—';
+        document.getElementById('preview').textContent = '';
+      }
+    }
+
+    // ── Захиалга дуугаргах ────────────────────────────────────
+    function announce() {
+      if (!mnWord) { document.getElementById('status').textContent = 'Дугаар оруулна уу'; return; }
+      const n = parseInt(cur);
+      const files = buildSequence(n);
+      if (!files.length) { document.getElementById('status').textContent = 'Тоо буруу байна'; return; }
+
+      const btn = document.getElementById('speakBtn');
+      btn.disabled = true;
+      document.getElementById('status').textContent = 'Дуугарч байна...';
+
+      // Хүлээлтэнд нэмэх
+      const qNum = cur, qWord = mnWord;
+      addToQueue(qNum, qWord);
+      cur = ''; mnWord = '';
+      update();
+
+      playBell(() => {
+        playSequence(files, 0, () => {
+          btn.disabled = false;
+          document.getElementById('status').textContent = '';
+          addHistory(qNum, qWord);
+          removeFromQueue();
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>
