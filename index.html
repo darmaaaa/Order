@@ -336,40 +336,41 @@
     //  MP3 ФАЙЛУУДЫН БАЙРШИЛ — ЭНД ӨӨРЧЛӨХ
     // ============================================================
     const AUDIO = {
-      1: 'audio/1.m4a', 2: 'audio/2.m4a', 3: 'audio/3.m4a',
-      4: 'audio/4.m4a', 5: 'audio/5.m4a', 6: 'audio/6.m4a',
-      7: 'audio/7.m4a', 8: 'audio/8.m4a', 9: 'audio/9.m4a',
-      10: 'audio/10.m4a',
+      1: 'new_audio/1.m4a', 2: 'new_audio/2.m4a', 3: 'new_audio/3.m4a',
+      4: 'new_audio/4.m4a', 5: 'new_audio/5.m4a', 6: 'new_audio/6.m4a',
+      7: 'new_audio/7.m4a', 8: 'new_audio/8.m4a', 9: 'new_audio/9.m4a',
+      10: 'new_audio/10.m4a',
 
       // Дангаараа: хорь, гуч, дөч...
-      20: 'audio/20.m4a', 30: 'audio/30.m4a', 40: 'audio/40.m4a',
-      50: 'audio/50.m4a', 60: 'audio/60.m4a', 70: 'audio/70.m4a',
-      80: 'audio/80.m4a', 90: 'audio/90.m4a',
+      20: 'new_audio/20.m4a', 30: 'new_audio/30.m4a', 40: 'new_audio/40.m4a',
+      50: 'new_audio/50.m4a', 60: 'new_audio/60.m4a', 70: 'new_audio/70.m4a',
+      80: 'new_audio/80.m4a', 90: 'new_audio/90.m4a',
 
       // Нэгтэй холбогдох үед: хорон, гучин, дөчин...
-      '20n': 'audio/xorin.m4a',  // "хорон"  → 21-29
-      '30n': 'audio/guchin.m4a',  // "гучин"  → 31-39
-      '40n': 'audio/duchin.m4a',  // "дөчин"  → 41-49
-      '50n': 'audio/tavin.m4a',   // "тавин"  → 51-59
-      '60n': 'audio/jaran.m4a',   // "жаран"  → 61-69
-      '70n': 'audio/dalan.m4a',   // "далан"  → 71-79
-      '80n': 'audio/nayn.m4a',   // "наян"   → 81-89
-      '90n': 'audio/yorn.m4a',   // "ерэн"   → 91-99
+      '20n': 'new_audio/xorin.m4a',  // "хорон"  → 21-29
+      '30n': 'new_audio/guchin.m4a',  // "гучин"  → 31-39
+      '40n': 'new_audio/duchin.m4a',  // "дөчин"  → 41-49
+      '50n': 'new_audio/tavin.m4a',   // "тавин"  → 51-59
+      '60n': 'new_audio/jaran.m4a',   // "жаран"  → 61-69
+      '70n': 'new_audio/dalan.m4a',   // "далан"  → 71-79
+      '80n': 'new_audio/nayn.m4a',   // "наян"   → 81-89
+      '90n': 'new_audio/yorn.m4a',   // "ерэн"   → 91-99
 
       // Зуутай холбогдох үед: гурван, таван, зургаан...
       // ЭНД файлуудаа бичиж аваад оруулна уу (2-9 хүртэлх тоонуудын өмнө 'z' үсэг тавьж нэрлэхийг зөвлөж байна)    
-      '2z': 'audio/2 zuun.m4a',   // "хоёр" → 200-299
-      '3z': 'audio/3n.m4a',   // "гурван" → 300-399
-      '4z': 'audio/4n.m4a',   // "дөрвөн" → 400-499
-      '5z': 'audio/5n.m4a',    // "таван"  → 500-599
-      '6z': 'audio/6n.m4a',  // "зургаан"→ 600-699
-      '7z': 'audio/7n.m4a',   // "долоон" → 700-799
-      '8z': 'audio/8n.m4a',   // "найман" → 800-899
-      '9z': 'audio/9n.m4a',    // "есөн"   → 900-999
+      '2z': 'new_audio/2 zuun.m4a',   // "хоёр" → 200-299
+      '3z': 'new_audio/3n.m4a',   // "гурван" → 300-399
+      '4z': 'new_audio/4n.m4a',   // "дөрвөн" → 400-499
+      '5z': 'new_audio/5n.m4a',    // "таван"  → 500-599
+      '6z': 'new_audio/6n.m4a',  // "зургаан"→ 600-699
+      '7z': 'new_audio/7n.m4a',   // "долоон" → 700-799
+      '8z': 'new_audio/8n.m4a',   // "найман" → 800-899
+      '9z': 'new_audio/9n.m4a',    // "есөн"   → 900-999
 
-      arvan: 'audio/arvan.m4a', zuun: 'audio/zuun.m4a',
-      myanga: 'audio/1000.m4a',
-      end: 'audio/end.m4a'
+      arvan: 'new_audio/arvan.m4a', zuun: 'new_audio/zuun.m4a',
+      myanga: 'new_audio/1000.m4a',
+      zuu: 'new_audio/100.m4a',  
+      end: 'new_audio/end.m4a'
     };
 
     // ── Дараалал үүсгэх ───────────────────────────────────────
@@ -377,7 +378,14 @@
       const p = [];
       if (n <= 0 || n >= 10000) return p;
       if (n >= 1000) { const th = Math.floor(n / 1000); if (th > 1) p.push(AUDIO[th]); p.push(AUDIO.myanga); n %= 1000; }
-      if (n >= 100) { const h = Math.floor(n / 100); if (h === 2) p.push(AUDIO[2]); else if (h > 2) p.push(AUDIO[h + 'z']); p.push(AUDIO.zuun); n %= 100; }
+      if (n >= 100) {
+        const h = Math.floor(n / 100);
+        if (h === 2) p.push(AUDIO[2]);
+        else if (h > 2) p.push(AUDIO[h + 'z']);
+        const rem = n % 100;
+        p.push(rem === 0 ? AUDIO.zuu : AUDIO.zuun); // дангаараа=зуу, холбогдох=зуун
+        n = rem;
+      }
       if (n >= 20) {
         const tens = Math.floor(n / 10) * 10;
         const r = n % 10;
@@ -401,7 +409,7 @@
       //  ХОНХНЫ MP3 ФАЙЛ — ЭНД ӨӨРЧЛӨХ
       //  audio хавтсандаа хонхны дуугаа хийгээд доор заана
       // ============================================================
-      const BELL_FILE = 'audio/bell.mp3'; // ← ЭНД файлын нэрээ заана
+      const BELL_FILE = 'new_audio/bell.mp3'; // ← ЭНД файлын нэрээ заана
 
       const audio = new Audio(BELL_FILE);
       audio.onended = () => { if (onDone) onDone(); };
